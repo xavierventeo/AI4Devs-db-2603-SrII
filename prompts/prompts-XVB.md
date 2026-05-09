@@ -35,92 +35,100 @@ Analiza el modelo actual en `backend/prisma/schema.prisma` y propón cómo ampli
 ERD del ejercicio:
 
 erDiagram
-     COMPANY {
-         int id PK
-         string name
-     }
-     EMPLOYEE {
-         int id PK
-         int company_id FK
-         string name
-         string email
-         string role
-         boolean is_active
-     }
-     POSITION {
-         int id PK
-         int company_id FK
-         int interview_flow_id FK
-         string title
-         text description
-         string status
-         boolean is_visible
-         string location
-         text job_description
-         text requirements
-         text responsibilities
-         numeric salary_min
-         numeric salary_max
-         string employment_type
-         text benefits
-         text company_description
-         date application_deadline
-         string contact_info
-     }
-     INTERVIEW_FLOW {
-         int id PK
-         string description
-     }
-     INTERVIEW_STEP {
-         int id PK
-         int interview_flow_id FK
-         int interview_type_id FK
-         string name
-         int order_index
-     }
-     INTERVIEW_TYPE {
-         int id PK
-         string name
-         text description
-     }
-     CANDIDATE {
-         int id PK
-         string firstName
-         string lastName
-         string email
-         string phone
-         string address
-     }
-     APPLICATION {
-         int id PK
-         int position_id FK
-         int candidate_id FK
-         date application_date
-         string status
-         text notes
-     }
-     INTERVIEW {
-         int id PK
-         int application_id FK
-         int interview_step_id FK
-         int employee_id FK
-         date interview_date
-         string result
-         int score
-         text notes
-     }
+    COMPANY {
+        int id PK
+        string name
+    }
 
-     COMPANY ||--o{ EMPLOYEE : employs
-     COMPANY ||--o{ POSITION : offers
-     POSITION ||--|| INTERVIEW_FLOW : assigns
-     INTERVIEW_FLOW ||--o{ INTERVIEW_STEP : contains
-     INTERVIEW_STEP ||--|| INTERVIEW_TYPE : uses
-     POSITION ||--o{ APPLICATION : receives
-     CANDIDATE ||--o{ APPLICATION : submits
-     APPLICATION ||--o{ INTERVIEW : has
-     INTERVIEW ||--|| INTERVIEW_STEP : consists_of
-     EMPLOYEE ||--o{ INTERVIEW : conducts
+    EMPLOYEE {
+        int id PK
+        int company_id FK
+        string name
+        string email
+        string role
+        boolean is_active
+    }
 
+    POSITION {
+        int id PK
+        int company_id FK
+        int interview_flow_id FK
+        string title
+        text description
+        string status
+        boolean is_visible
+        string location
+        text job_description
+        text requirements
+        text responsibilities
+        numeric salary_min
+        numeric salary_max
+        string employment_type
+        text benefits
+        text company_description
+        date application_deadline
+        string contact_info
+    }
+
+    INTERVIEW_FLOW {
+        int id PK
+        string description
+    }
+
+    INTERVIEW_STEP {
+        int id PK
+        int interview_flow_id FK
+        int interview_type_id FK
+        string name
+        int order_index
+    }
+
+    INTERVIEW_TYPE {
+        int id PK
+        string name
+        text description
+    }
+
+    CANDIDATE {
+        int id PK
+        string firstName
+        string lastName
+        string email
+        string phone
+        string address
+    }
+
+    APPLICATION {
+        int id PK
+        int position_id FK
+        int candidate_id FK
+        date application_date
+        string status
+        text notes
+    }
+
+    INTERVIEW {
+        int id PK
+        int application_id FK
+        int interview_step_id FK
+        int employee_id FK
+        date interview_date
+        string result
+        int score
+        text notes
+    }
+
+    COMPANY ||--o{ EMPLOYEE : employs
+    COMPANY ||--o{ POSITION : offers
+    POSITION }o--|| INTERVIEW_FLOW : assigns
+    INTERVIEW_FLOW ||--o{ INTERVIEW_STEP : contains
+    INTERVIEW_STEP }o--|| INTERVIEW_TYPE : uses
+    POSITION ||--o{ APPLICATION : receives
+    CANDIDATE ||--o{ APPLICATION : submits
+    APPLICATION ||--o{ INTERVIEW : has
+    INTERVIEW }o--|| INTERVIEW_STEP : consists_of
+    EMPLOYEE ||--o{ INTERVIEW : conducts
+    
 No modifiques archivos todavía. Reutiliza siempre las entidades ya existentes y no dupliques tablas que ya estén modeladas. Primero explícame:
 - cómo encaja el ERD con el modelo actual
 - si hay conflictos de nombres o entidades existentes reutilizables
@@ -192,7 +200,7 @@ Entrega final (solo documental, sin tocar archivos):
 ## Prompt 5: Aplicar el modelo y generar la migración
 Procede con la implementación sólo para las recomendaciones que indicas como: Tier 1 (alta señal/coste): G1 (índices retroactivos), I1 (createdAt/updatedAt), A1 (Employee.role enum), D1 (InterviewFlow.name). 
 
-## Prompt 7: Generar juego de datos y analizar una query compleja
+## Prompt 6: Generar juego de datos y analizar una query compleja
 
 Genera un juego de datos de prueba realista en `LTIdb` que cubra los flujos principales del modelo (compañías, empleados, posiciones, flujos y pasos de entrevista, candidatos, aplicaciones, entrevistas). Los datos no deben ser productivos pero sí suficientes para que las consultas devuelvan resultados representativos.
 
@@ -203,7 +211,7 @@ A continuación:
 
 Entrega: descripción del juego de datos, la query propuesta, el plan de ejecución obtenido y la lista de mejoras propuestas con su justificación.
 
-## Prompt 8: Aplicar optimización
+## Prompt 7: Aplicar optimización
 
 Aplica la recomendación preventiva: A1 — añadir Application(candidateId, status) y eliminar Application_candidateId_idx. 
 
