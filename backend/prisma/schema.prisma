@@ -250,7 +250,7 @@ model Application {
 
   @@unique([positionId, candidateId])
   @@index([positionId])
-  @@index([candidateId])
+  @@index([candidateId, status])
 }
 
 model Interview {

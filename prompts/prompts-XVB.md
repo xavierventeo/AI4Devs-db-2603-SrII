@@ -191,3 +191,20 @@ Entrega final (solo documental, sin tocar archivos):
 
 ## Prompt 5: Aplicar el modelo y generar la migración
 Procede con la implementación sólo para las recomendaciones que indicas como: Tier 1 (alta señal/coste): G1 (índices retroactivos), I1 (createdAt/updatedAt), A1 (Employee.role enum), D1 (InterviewFlow.name). 
+
+## Prompt 7: Generar juego de datos y analizar una query compleja
+
+Genera un juego de datos de prueba realista en `LTIdb` que cubra los flujos principales del modelo (compañías, empleados, posiciones, flujos y pasos de entrevista, candidatos, aplicaciones, entrevistas). Los datos no deben ser productivos pero sí suficientes para que las consultas devuelvan resultados representativos.
+
+A continuación:
+- Propón una query compleja que recorra varias entidades relacionadas: candidatos con sus aplicaciones activas, las posiciones asociadas y el estado de sus entrevistas.
+- Ejecuta `EXPLAIN (ANALYZE, BUFFERS)` sobre la query.
+- A partir del plan de ejecución, propón mejoras concretas (índices nuevos, ajustes en la query, cambios puntuales de modelo si están justificados) explicando el porqué de cada una. **No las apliques todavía.**
+
+Entrega: descripción del juego de datos, la query propuesta, el plan de ejecución obtenido y la lista de mejoras propuestas con su justificación.
+
+## Prompt 8: Aplicar optimización
+
+Aplica la recomendación preventiva: A1 — añadir Application(candidateId, status) y eliminar Application_candidateId_idx. 
+
+Vuelve a analizar la query y compara los resultados con respecto al plan anterior
