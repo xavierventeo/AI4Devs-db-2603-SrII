@@ -170,3 +170,24 @@ Usa estas decisiones para implementar el schema.prisma ampliado y la migración:
 
 Con esto, procede a redactar el schema.prisma ampliado y la migración correspondiente sin tocar archivos hasta el visto bueno.
 
+## Prompt 4: Revisión crítica y propuesta de mejoras
+
+Revisa la situaación actual de la base de datos `LTIdb` y `schema.prisma` y plantea **mejoras concretas** sobre ella. No rediseñes desde cero salvo problema grave. **No modifiques `schema.prisma` ni generes migraciones**: limítate a la revisión documental y espera instrucciones explícitas para aplicar los cambios.
+
+Analiza y propón mejoras sobre:
+- Normalización del modelo y eliminación de redundancias, incluso si el ERD original no las contemplaba.
+- Cardinalidades reales entre modelos.
+- Integridad referencial, FKs y estrategias onDelete / onUpdate.
+- Campos obligatorios vs opcionales.
+- Conveniencia de `enum` para estados, roles, tipos de contrato y resultados frente a `String`.
+- Constraints @unique / @@unique que faltan o sobran.
+- Índices necesarios en FKs y campos de búsqueda frecuente.
+- Riesgos de migración sobre datos existentes.
+
+Entrega final (solo documental, sin tocar archivos):
+- Lista cerrada de modelos, enums, índices y constraints únicos resultantes tras aplicar las mejoras.
+- Mejoras propuestas con justificación breve.
+- Riesgos a revisar manualmente antes de migrar.
+
+## Prompt 5: Aplicar el modelo y generar la migración
+Procede con la implementación sólo para las recomendaciones que indicas como: Tier 1 (alta señal/coste): G1 (índices retroactivos), I1 (createdAt/updatedAt), A1 (Employee.role enum), D1 (InterviewFlow.name). 

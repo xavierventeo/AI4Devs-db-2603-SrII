@@ -44,6 +44,14 @@ enum InterviewResult {
   NO_SHOW
 }
 
+enum EmployeeRole {
+  ADMIN
+  RECRUITER
+  INTERVIEWER
+  HIRING_MANAGER
+  MANAGER
+}
+
 // ─── CANDIDATE DOMAIN (existing, extended) ──────────────────────────────────
 
 model Candidate {
@@ -58,6 +66,9 @@ model Candidate {
   deletedAt       DateTime?
   anonymizedAt    DateTime?
 
+  createdAt       DateTime         @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime         @updatedAt @db.Timestamptz(3)
+
   educations      Education[]
   workExperiences WorkExperience[]
   resumes         Resume[]
@@ -71,7 +82,13 @@ model Education {
   startDate   DateTime
   endDate     DateTime?
   candidateId Int
+
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
+
   candidate   Candidate @relation(fields: [candidateId], references: [id])
+
+  @@index([candidateId])
 }
 
 model WorkExperience {
@@ -82,7 +99,13 @@ model WorkExperience {
   startDate   DateTime
   endDate     DateTime?
   candidateId Int
+
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
+
   candidate   Candidate @relation(fields: [candidateId], references: [id])
+
+  @@index([candidateId])
 }
 
 model Resume {
@@ -91,7 +114,13 @@ model Resume {
   fileType    String    @db.VarChar(50)
   uploadDate  DateTime
   candidateId Int
+
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
+
   candidate   Candidate @relation(fields: [candidateId], references: [id])
+
+  @@index([candidateId])
 }
 
 // ─── COMPANY / EMPLOYEE ─────────────────────────────────────────────────────
@@ -99,20 +128,27 @@ model Resume {
 model Company {
   id        Int        @id @default(autoincrement())
   name      String     @unique @db.VarChar(150)
+
+  createdAt DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime   @updatedAt @db.Timestamptz(3)
+
   employees Employee[]
   positions Position[]
 }
 
 model Employee {
-  id         Int         @id @default(autoincrement())
+  id         Int          @id @default(autoincrement())
   companyId  Int
-  name       String      @db.VarChar(150)
-  email      String      @unique @db.VarChar(255)
-  role       String      @db.VarChar(100)
-  isActive   Boolean     @default(true)
+  name       String       @db.VarChar(150)
+  email      String       @unique @db.VarChar(255)
+  role       EmployeeRole
+  isActive   Boolean      @default(true)
   deletedAt  DateTime?
 
-  company    Company     @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  createdAt  DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime     @updatedAt @db.Timestamptz(3)
+
+  company    Company      @relation(fields: [companyId], references: [id], onDelete: Restrict)
   interviews Interview[]
 
   @@index([companyId])
@@ -122,7 +158,11 @@ model Employee {
 
 model InterviewFlow {
   id          Int             @id @default(autoincrement())
+  name        String          @db.VarChar(150)
   description String          @db.VarChar(500)
+
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(3)
 
   positions   Position[]
   steps       InterviewStep[]
@@ -133,6 +173,9 @@ model InterviewType {
   name        String          @unique @db.VarChar(100)
   description String?         @db.Text
 
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(3)
+
   steps       InterviewStep[]
 }
 
@@ -142,6 +185,9 @@ model InterviewStep {
   interviewTypeId Int
   name            String        @db.VarChar(150)
   orderIndex      Int
+
+  createdAt       DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime      @updatedAt @db.Timestamptz(3)
 
   interviewFlow   InterviewFlow @relation(fields: [interviewFlowId], references: [id], onDelete: Cascade)
   interviewType   InterviewType @relation(fields: [interviewTypeId], references: [id], onDelete: Restrict)
@@ -174,6 +220,9 @@ model Position {
   applicationDeadline DateTime?       @db.Date
   contactInfo         String?         @db.VarChar(255)
 
+  createdAt           DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt           DateTime        @updatedAt @db.Timestamptz(3)
+
   company             Company         @relation(fields: [companyId], references: [id], onDelete: Restrict)
   interviewFlow       InterviewFlow?  @relation(fields: [interviewFlowId], references: [id], onDelete: Restrict)
   applications        Application[]
@@ -191,6 +240,9 @@ model Application {
   applicationDate DateTime          @default(now()) @db.Date
   status          ApplicationStatus @default(SUBMITTED)
   notes           String?           @db.Text
+
+  createdAt       DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @db.Timestamptz(3)
 
   position        Position          @relation(fields: [positionId], references: [id], onDelete: Restrict)
   candidate       Candidate         @relation(fields: [candidateId], references: [id], onDelete: Restrict)
@@ -210,6 +262,9 @@ model Interview {
   result          InterviewResult @default(PENDING)
   score           Int?
   notes           String?         @db.Text
+
+  createdAt       DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime        @updatedAt @db.Timestamptz(3)
 
   application     Application     @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   interviewStep   InterviewStep   @relation(fields: [interviewStepId], references: [id], onDelete: Restrict)
